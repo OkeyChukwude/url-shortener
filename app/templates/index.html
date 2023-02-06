@@ -1,5 +1,31 @@
 {% extends 'base.html' %}
 
-{% block body %}
+{% block content %}
+<div class="d-flex  flex-row m-auto justify-content-between">
+    <div class="col-5 my-auto">
+        <h1>Welcome to shorten.</h1>
+        <p class="lead">Create a free account to shorten URLs, customise links and generate QR Codes. And now, create Link-in-bios</p>
+        <p class="lead">
+            <a href="#" class="btn btn-secondary fw-bold  bg-dark text-white">Get Started for Free</a>
+        </p>
+    </div>
+    <div class="col-5 my-auto mx-6">
+        <div class="card">
+            <div class="card-body">
+                <form class="row g-3">
+                    <div class="w-100">
+                        <label for="long-url" class="form-label text-dark h6">Enter a long URL</label>
+                        <input type="text" class="form-control" id="long-url" required>
+                    </div>
+                    <div class="w-10">
+                        <label for="alias" class="form-label text-dark h6">Enter a custormised short</label>
+                        <input type="text" class="form-control" id="alias">
+                    </div>
+                    <button class="w-100 btn btn-dark fw-bold" type="submit">Shorten</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
