@@ -1,5 +1,6 @@
 const inputForm = document.querySelector("#shorten-form");
 const outputForm = document.querySelector("#result");
+const shortenAgain = document.querySelector('#shorten-again');
 
 async function shorten(longURL, alias) {
     const response = await fetch('/shorten', {
@@ -16,13 +17,13 @@ async function shorten(longURL, alias) {
 
 inputForm.addEventListener('submit', async event => {
     event.preventDefault();
-    const button = document.querySelector('#submit')
+    const button = document.querySelector('#submit');
     const longURL = document.querySelector('#long-url').value;
     const alias = document.querySelector('#alias').value;
 
-    button.innerHTML = `<div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div>`
+    button.innerHTML = `<div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div>`;
 
-    const response = await shorten(longURL, alias)
+    const response = await shorten(longURL, alias);
 
     if (response.error) {
         const message = response.error.message
@@ -38,4 +39,13 @@ inputForm.addEventListener('submit', async event => {
     outputForm.classList.remove('d-none')    
 
     
+});
+
+shortenAgain.addEventListener('click', event => {
+    event.preventDefault();
+    inputForm.classList.remove('d-none');
+    outputForm.classList.add('d-none');
+    document.querySelector('#long-url').value = '';
+    document.querySelector('#alias').value = '';
+    document.querySelector('#submit').textContent =  'Shorten';
 });
