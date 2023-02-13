@@ -80,7 +80,6 @@ myurls.addEventListener('click', () => {
     document.querySelector('#urls').innerHTML = '';
 
     for (let url of urls) {
-        console.log(url)
         let container = document.createElement('div');
         let longurlEle = document.createElement('h5');
         let shorturlEle = document.createElement('p');
