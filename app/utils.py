@@ -56,7 +56,7 @@ def valid_url(url):
     
     return True
 
-def generateshorts():
+def generate_short():
     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     short = ''
     for i in range(8):

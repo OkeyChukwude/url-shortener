@@ -33,6 +33,8 @@ inputForm.addEventListener('submit', async event => {
         return
     }
 
+    addToLocalStorage(response)
+
     document.querySelector('#long-url-output').value = response.longURL
     document.querySelector('#short-url').value = response.shortURL
     inputForm.classList.add('d-none')
@@ -49,3 +51,18 @@ shortenAgain.addEventListener('click', event => {
     document.querySelector('#alias').value = '';
     document.querySelector('#submit').textContent =  'Shorten';
 });
+
+const addToLocalStorage = response => {
+    let urls;
+
+    if (urls = localStorage.getItem('urls') === null){
+        urls = [];
+    } else {
+        urls = JSON.parse(localStorage.getItem(urls))
+    }
+
+    urls.push(response);
+
+    localStorage.setItem('urls', JSON.stringify(urls))
+
+}

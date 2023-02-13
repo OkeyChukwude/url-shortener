@@ -4,7 +4,8 @@ from app import db
 class Url(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     longurl = db.Column(db.String(254), index=True, nullable=False)
-    shorturl = db.Column(db.String(8), index=True, unique=True, nullable=False)
+    short = db.Column(db.String(8), index=True, unique=True, nullable=False)
+    clicks = db.Column(db.Integer, index=True, default=0)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     
