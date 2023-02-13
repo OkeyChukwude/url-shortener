@@ -77,6 +77,8 @@ myurls.addEventListener('click', () => {
         urls = JSON.parse(localStorage.getItem('urls'));
     }
 
+    document.querySelector('#urls').innerHTML = '';
+
     for (let url of urls) {
         console.log(url)
         let container = document.createElement('div');
