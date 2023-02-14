@@ -38,6 +38,7 @@ inputForm.addEventListener('submit', async event => {
 
     document.querySelector('#long-url-output').value = response.longURL
     document.querySelector('#short-url').value = response.shortURL
+    document.querySelector('#visit').href = response.shortURL
     inputForm.classList.add('d-none')
     outputForm.classList.remove('d-none')    
 
@@ -83,12 +84,12 @@ myurls.addEventListener('click', () => {
         let container = document.createElement('div');
         let longurlEle = document.createElement('h5');
         let shorturlEle = document.createElement('p');
-        let buttonsContainer = document.createElement('div')
+        let buttonsContainer = document.createElement('div');
         
         buttonsContainer.innerHTML = `<button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></button>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-envelope-fill"></i></button>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-qr-code"></i></button>
-                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>">Share</button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
+                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Share on social media</span>">Share</button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                 <li><button class="dropdown-item" type="button"><i class="bi bi-facebook"></i> Facebook</button></li>
                                 <li><button class="dropdown-item" type="button"><i class="bi bi-twitter"></i> Twitter</button></li>
@@ -96,7 +97,7 @@ myurls.addEventListener('click', () => {
                                 <li><button class="dropdown-item" type="button"><i class="bi bi-linkedin"></i> Linkenin</button></li>
                                 
                             </ul>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" >Copy</button>`
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Copy on clipboard</span>" >Copy</button>`;
 
         longurlEle.textContent = url.longURL;
         shorturlEle.textContent = url.shortURL;
@@ -104,8 +105,14 @@ myurls.addEventListener('click', () => {
         container.appendChild(longurlEle);
         container.appendChild(shorturlEle);
         container.appendChild(buttonsContainer);
-        container.appendChild(document.createElement('hr'))
+        container.appendChild(document.createElement('hr'));
         document.querySelector('#urls').appendChild(container);
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
     }
     
 })
+
