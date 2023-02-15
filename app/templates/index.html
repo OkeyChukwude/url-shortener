@@ -25,7 +25,7 @@
                             <input type="text" class="form-control" id="long-url-output" readonly>
                         </div>
                         <div class="w-10">
-                            <label for="alias" class="form-label text-dark h6">Short URL</label>
+                            <label for="short-url" class="form-label text-dark h6">Short URL</label>
                             <input type="text" class="form-control" id="short-url" readonly>
                         </div>
                         <div class="w-100">
@@ -40,10 +40,20 @@
                                 <li><button class="dropdown-item" type="button"><i class="bi bi-linkedin"></i> Linkenin</button></li>
                                 
                             </ul>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class=''>Copy to clipboard</span>" >Copy</button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" onclick="copyToClipboard" title="<span class=''>Copy to clipboard</span>" >Copy</button>
                         </div>
                         <div class="w-100">
-                            <button id="myURL" class="w-40 btn btn-outline-dark fw-bold">My URLs</button>
+                            <button id="myUrlsButton" class="w-60 btn btn-outline-dark fw-bold" type="button" data-bs-toggle="offcanvas" data-bs-target="#myUrlsCanvas" aria-controls="myUrlsCanvas">My URLs</button>
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="myUrlsCanvas" aria-labelledby="myurlslabel">
+                                <div class="offcanvas-header">
+                                    <div><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <h5 class="offcanvas-title" id="myurlslabel">My URLs</h5>
+                                    <hr>
+                                    <div id="urlsB"></div>
+                                </div>
+                            </div>
                             <button id="shorten-again" class="w-60 btn btn-dark fw-bold" >Shorten another</button>
                         </div>
                     </form>

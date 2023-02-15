@@ -2,6 +2,7 @@ const inputForm = document.querySelector("#shorten-form");
 const outputForm = document.querySelector("#result");
 const shortenAgain = document.querySelector('#shorten-again');
 const myurls = document.querySelector('#myurls');
+const myUrlsButton = document.querySelector('#myUrlsButton')
 
 async function shorten(longURL, alias) {
     const response = await fetch('/shorten', {
@@ -116,3 +117,56 @@ myurls.addEventListener('click', () => {
     
 })
 
+myUrlsButton.addEventListener('click', (e) => {
+    let urls;
+
+    if (urls = localStorage.getItem('urls') === null){
+        urls = [];
+    } else {
+        urls = JSON.parse(localStorage.getItem('urls'));
+    }
+
+    document.querySelector('#urlsB').innerHTML = '';
+
+    for (let url of urls) {
+        let container = document.createElement('div');
+        let longurlEle = document.createElement('h5');
+        let shorturlEle = document.createElement('p');
+        let buttonsContainer = document.createElement('div');
+        
+        buttonsContainer.innerHTML = `<button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
+                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Share on social media</span>">Share</button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><button class="dropdown-item" type="button"><i class="bi bi-facebook"></i> Facebook</button></li>
+                                <li><button class="dropdown-item" type="button"><i class="bi bi-twitter"></i> Twitter</button></li>
+                                <li><button class="dropdown-item" type="button"><i class="bi bi-whatsapp"></i> WhatsApp</button></li>
+                                <li><button class="dropdown-item" type="button"><i class="bi bi-linkedin"></i> Linkenin</button></li>
+                                
+                            </ul>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Copy on clipboard</span>" >Copy</button>`;
+
+        longurlEle.textContent = url.longURL;
+        shorturlEle.textContent = url.shortURL;
+
+        container.appendChild(longurlEle);
+        container.appendChild(shorturlEle);
+        container.appendChild(buttonsContainer);
+        container.appendChild(document.createElement('hr'));
+        document.querySelector('#urlsB').appendChild(container);
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    }
+})
+
+async function copyToClipboard(event) {
+    try {
+        await navigator.clipboard.writeText(document.querySelector('short-url').value)
+    } catch (error) {
+        console.error('Failed to copy: ', err);
+    }
+}
