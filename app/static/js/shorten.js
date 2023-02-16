@@ -3,6 +3,7 @@ const outputForm = document.querySelector("#result");
 const shortenAgain = document.querySelector('#shorten-again');
 const myurls = document.querySelector('#myurls');
 const myUrlsButton = document.querySelector('#myUrlsButton')
+const copyButton = document.querySelector('#copy')
 
 async function shorten(longURL, alias) {
     const response = await fetch('/shorten', {
@@ -40,6 +41,11 @@ inputForm.addEventListener('submit', async event => {
     document.querySelector('#long-url-output').value = response.longURL
     document.querySelector('#short-url').value = response.shortURL
     document.querySelector('#visit').href = response.shortURL
+    document.querySelector('#twitter-share').href = `https://twitter.com/intent/tweet?text=Share shorts on Twitter ${response.shortURL}`
+    document.querySelector('#linkedIn-share').href = `https://www.linkedin.com/sharing/share-offsite/?url=${response.shortURL}`
+    document.querySelector('#facebook-share').href = `https://www.facebook.com/sharer/sharer.php?u=${response.shortURL}`
+    document.querySelector('#whatsapp-share').href = `https://whatsapp://send?text=Share shorts on WhatsApp ${response.shortURL}`
+    document.querySelector('#email-share').href = `mailto:?subject=Share Shorts&amp;body=Share shorts${response.shortURL}`
     inputForm.classList.add('d-none')
     outputForm.classList.remove('d-none')    
 
@@ -98,7 +104,7 @@ myurls.addEventListener('click', () => {
                                 <li><button class="dropdown-item" type="button"><i class="bi bi-linkedin"></i> Linkenin</button></li>
                                 
                             </ul>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Copy on clipboard</span>" >Copy</button>`;
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark' onclick='copyToClipboard()'>Copy to clipboard</span>" >Copy</button>`;
 
         longurlEle.textContent = url.longURL;
         shorturlEle.textContent = url.shortURL;
@@ -114,7 +120,7 @@ myurls.addEventListener('click', () => {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     }
-    
+
 })
 
 myUrlsButton.addEventListener('click', (e) => {
@@ -165,8 +171,14 @@ myUrlsButton.addEventListener('click', (e) => {
 
 async function copyToClipboard(event) {
     try {
-        await navigator.clipboard.writeText(document.querySelector('short-url').value)
+        await navigator.clipboard.writeText(document.querySelector('#short-url').value)
+        event.target.innerHTML = '<i class="bi bi-check2"></i>'
+        setTimeout(() => {
+            event.target.textContent = 'Copy'
+        }, 1000)
     } catch (error) {
-        console.error('Failed to copy: ', err);
+        console.error('Failed to copy: ', error);
     }
 }
+
+copyButton.addEventListener('click', copyToClipboard)
