@@ -4,6 +4,7 @@ const shortenAgain = document.querySelector('#shorten-again');
 const myurls = document.querySelector('#myurls');
 const myUrlsButton = document.querySelector('#myUrlsButton')
 const copyButton = document.querySelector('#copy')
+const qrbutton = document.querySelector('#qr-share')
 
 async function shorten(longURL, alias) {
     const response = await fetch('/shorten', {
@@ -60,6 +61,27 @@ shortenAgain.addEventListener('click', event => {
     document.querySelector('#alias').value = '';
     document.querySelector('#submit').textContent =  'Shorten';
 });
+
+qrbutton.addEventListener('click', async () => {
+    let qrcode = await new QRCode(document.getElementById("qrcode"),
+             {
+              text: document.querySelector('#short-url').value,
+              width: 450,
+              height: 450,
+              colorDark : "#000000",
+              colorLight : "#ffffff",
+              correctLevel : QRCode.CorrectLevel.H
+            }); 
+    setTimeout(function () {
+        let link = document.createElement("a");
+        link.download = 'short.png';
+        link.href = document.querySelector('#qrcode').children[1].src;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }, 1000)
+})
 
 const addToLocalStorage = response => {
     let urls;
