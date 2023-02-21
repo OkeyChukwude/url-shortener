@@ -62,26 +62,24 @@ shortenAgain.addEventListener('click', event => {
     document.querySelector('#submit').textContent =  'Shorten';
 });
 
-qrbutton.addEventListener('click', async () => {
-    let qrcode = await new QRCode(document.getElementById("qrcode"),
-             {
-              text: document.querySelector('#short-url').value,
-              width: 450,
-              height: 450,
-              colorDark : "#000000",
-              colorLight : "#ffffff",
-              correctLevel : QRCode.CorrectLevel.H
-            }); 
+async function getQRCode(event) {
+    var qr = new QRious({
+       value: document.querySelector('#short-url').value || event.target.parentElement.parentElement.parentElement.querySelector('p').textContent
+    });
+
     setTimeout(function () {
         let link = document.createElement("a");
         link.download = 'short.png';
-        link.href = document.querySelector('#qrcode').children[1].src;
+        link.href = qr.toDataURL();
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         delete link;
     }, 1000)
-})
+}
+
+qrbutton.addEventListener('click', getQRCode)
+
 
 const addToLocalStorage = response => {
     let urls;
@@ -115,18 +113,18 @@ myurls.addEventListener('click', () => {
         let shorturlEle = document.createElement('p');
         let buttonsContainer = document.createElement('div');
         
-        buttonsContainer.innerHTML = `<button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></button>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></button>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
+        buttonsContainer.innerHTML = `
+                            <a href=${url.shortURL} target="_blank" id="visit" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
+                            <a type="button" href="mailto:?subject=Share Shorts&amp;body=Share shorts${url.shortURL}" id="email-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></a>
+                            <button type="button" class="qr-share-offcanvas btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
                             <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Share on social media</span>">Share</button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <li><button class="dropdown-item" type="button"><i class="bi bi-facebook"></i> Facebook</button></li>
-                                <li><button class="dropdown-item" type="button"><i class="bi bi-twitter"></i> Twitter</button></li>
-                                <li><button class="dropdown-item" type="button"><i class="bi bi-whatsapp"></i> WhatsApp</button></li>
-                                <li><button class="dropdown-item" type="button"><i class="bi bi-linkedin"></i> Linkenin</button></li>
-                                
+                                <li><a href="https://www.facebook.com/sharer/sharer.php?u=${url.shortURL}" class="dropdown-item" id="facebook-share" target="_blank" rel="noopener noreferrer" type="button"><i class="bi bi-facebook"></i> Facebook</a></li>
+                                <li><a href="https://twitter.com/intent/tweet?text=Share shorts on Twitter ${url.shortURL}" class="dropdown-item" id="twitter-share" target="_blank" rel="noopener noreferrer" data-size="large"  type="button"><i class="bi bi-twitter"></i> Twitter</a></li>
+                                <li><a class="dropdown-item" id="whatsapp-share" data-action="share/whatsapp/share" rel="noopener noreferrer" target="_blank type="button"><i class="bi bi-whatsapp"></i> WhatsApp</a></li>
+                                <li><a href="https://www.linkedin.com/sharing/share-offsite/?url=${url.shortURL}" class="dropdown-item" id="linkedIn-share" target="_blank" rel="noopener noreferrer" type="button"><i class="bi bi-linkedin"></i> LinkedIn</a></li>
                             </ul>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark' onclick='copyToClipboard()'>Copy to clipboard</span>" >Copy</button>`;
+                            <button type="button" class="copy btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark' onclick='copyToClipboard()'>Copy to clipboard</span>" >Copy</button>`;
 
         longurlEle.textContent = url.longURL;
         shorturlEle.textContent = url.shortURL;
@@ -142,6 +140,15 @@ myurls.addEventListener('click', () => {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     }
+    const qrshareButtons = document.querySelectorAll('.qr-share-offcanvas')
+    qrshareButtons.forEach(button => {
+        button.addEventListener('click', getQRCode)
+    })
+
+    const copyButtons = document.querySelectorAll('.copy')
+    copyButtons.forEach(button => {
+        button.addEventListener('click', copyToClipboard)
+    })
 
 })
 
@@ -173,7 +180,7 @@ myUrlsButton.addEventListener('click', (e) => {
                                 <li><button class="dropdown-item" type="button"><i class="bi bi-linkedin"></i> Linkenin</button></li>
                                 
                             </ul>
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Copy on clipboard</span>" >Copy</button>`;
+                            <button type="button" class="copy btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Copy on clipboard</span>" >Copy</button>`;
 
         longurlEle.textContent = url.longURL;
         shorturlEle.textContent = url.shortURL;
@@ -193,7 +200,7 @@ myUrlsButton.addEventListener('click', (e) => {
 
 async function copyToClipboard(event) {
     try {
-        await navigator.clipboard.writeText(document.querySelector('#short-url').value)
+        await navigator.clipboard.writeText(document.querySelector('#short-url').value || event.target.parentElement.parentElement.querySelector('p').textContent)
         event.target.innerHTML = '<i class="bi bi-check2"></i>'
         setTimeout(() => {
             event.target.textContent = 'Copy'
