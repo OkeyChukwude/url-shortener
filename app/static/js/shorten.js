@@ -63,9 +63,16 @@ shortenAgain.addEventListener('click', event => {
 });
 
 async function getQRCode(event) {
-    var qr = new QRious({
-       value: document.querySelector('#short-url').value || event.target.parentElement.parentElement.parentElement.querySelector('p').textContent
-    });
+    let qr;
+    if (event.target.parentElement.parentElement === document.querySelector('#result')) {
+        qr = new QRious({
+            value: document.querySelector('#short-url').value
+        });
+    } else {
+        qr = new QRious({
+            value: event.target.parentElement.parentElement.parentElement.querySelector('p').textContent
+        });
+    }
 
     setTimeout(function () {
         let link = document.createElement("a");
@@ -114,7 +121,7 @@ function createSidebarElements() {
         let buttonsContainer = document.createElement('div');
         
         buttonsContainer.innerHTML = `
-                            <a href=${url.shortURL} target="_blank" id="visit" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
+                            <a href=${url.shortURL} target="_blank" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
                             <a type="button" href="mailto:?subject=Share Shorts&amp;body=Share shorts${url.shortURL}" id="email-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></a>
                             <button type="button" class="qr-share-offcanvas btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
                             <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Share on social media</span>">Share</button>
@@ -157,7 +164,11 @@ myUrlsButton.addEventListener('click', createSidebarElements)
 
 async function copyToClipboard(event) {
     try {
-        await navigator.clipboard.writeText(document.querySelector('#short-url').value || event.target.parentElement.parentElement.querySelector('p').textContent)
+        if (event.target.parentElement.parentElement === document.querySelector('#result')) {
+            await navigator.clipboard.writeText(document.querySelector('#short-url').value)
+        } else {
+            await navigator.clipboard.writeText(event.target.parentElement.parentElement.querySelector('p').textContent)
+        }
         event.target.innerHTML = '<i class="bi bi-check2"></i>'
         setTimeout(() => {
             event.target.textContent = 'Copy'
