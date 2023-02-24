@@ -56,3 +56,11 @@ def redirect_short(short):
     db.session.commit()
 
     return redirect(url.longurl)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
