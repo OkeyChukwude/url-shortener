@@ -43,7 +43,7 @@ def create_short():
     db.session.add(url)
     db.session.commit()
 
-    return jsonify({'longURL': long_url, 'shortURL': f'{request.host_url}/{short}'})
+    return jsonify({'longURL': long_url, 'shortURL': f'{request.host_url}{short}'})
 
 @app.route('/<short>')
 def redirect_short(short):
