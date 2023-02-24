@@ -64,7 +64,7 @@ shortenAgain.addEventListener('click', event => {
 
 async function getQRCode(event) {
     let qr;
-    if (event.target.parentElement.parentElement === document.querySelector('#result')) {
+    if (event.target.parentElement.parentElement.parentElement === document.querySelector('#result') || event.target.parentElement.parentElement === document.querySelector('#result')) {
         qr = new QRious({
             value: document.querySelector('#short-url').value
         });
