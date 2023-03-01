@@ -1,7 +1,8 @@
 from app import app, db
-from flask import render_template, request, jsonify, redirect
+from flask import render_template, request, jsonify, redirect, url_for
 from .utils import valid_url, generate_short
-from .models import Url
+from .models import Url, User
+from flask_login import current_user, login_user, logout_user
 
 @app.errorhandler(404)
 def not_found(error):
@@ -57,10 +58,29 @@ def redirect_short(short):
 
     return redirect(url.longurl)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for(index))
+    
+    if request.method == 'POST':
+        email = request.json.get('email')
+        password = request.json.get('password')
+
+        user = User.query.filter_by(email=email).first()
+        if user is None or user.check_password(password):
+            return jsonify({'error': {'message': 'Inavlid email/password'}})
+        
+        login_user(user)
+        return redirect(url_for('index'))
+
     return render_template('login.html')
 
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    login_user()
+    return redirect(url_for('index'))

@@ -25,11 +25,19 @@
                                 <input type="text" class="form-control" id="long-url" required>
                                 <div id="long-url-feedback"></div>
                             </div>
+                            {% if current_user.is_anonymous %}
+                            <div class="w-10">
+                                <label for="alias" class="form-label text-dark h5">Enter a custormised short</label>
+                                <input type="text" class="form-control" id="alias" disabled placeholder="Sign Up and customise shorts">
+                                <div id="alias-feedback"></div>
+                            </div>
+                            {% else %}
                             <div class="w-10">
                                 <label for="alias" class="form-label text-dark h5">Enter a custormised short</label>
                                 <input type="text" class="form-control" id="alias">
                                 <div id="alias-feedback"></div>
                             </div>
+                            {% endif %}
                             <button id="submit" class="w-100 btn btn-dark fw-bold" type="submit">Shorten</button>
                         </form>
                         <form id="result" class="row g-3 d-none">
@@ -44,8 +52,11 @@
                             <div class="w-100">
                                 <a href="#" target="_blank" id="visit" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
                                 <a type="button" href="" id="email-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></a>
-                                <span id="qrcode" style="display:none" style="height:450px;width:450px;" v-loading="PanoramaInfo.bgenerateing"></span>
+                                {% if current_user.is_anonymous %}
+                                <a href="/login" type="button" id="qr-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Please Signup to get a qr code</span>"><i class="bi bi-qr-code"></i></a>
+                                {% else %}
                                 <button type="button" id="qr-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
+                                {% endif %}
                                 <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" aria-haspopup="true" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle-second ="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Share on social media</span>">Share</button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                     <li><a class="dropdown-item" id="facebook-share" target="_blank" rel="noopener noreferrer" type="button"><i class="bi bi-facebook"></i> Facebook</a></li>
@@ -64,6 +75,7 @@
                     </div>
                 </div>
             </div>
+            {% if current_user.is_anonymous %}
             <div class="col-sm-6 mx-auto mt-3">
                 <h1>Welcome to shorten.</h1>
                 <p class="lead">Create a free account to shorten URLs, customise links and generate QR Codes.</p>
@@ -71,6 +83,7 @@
                     <a href="/register" class="btn btn-secondary fw-bold  bg-dark text-white">Get Started for Free</a>
                 </p>
             </div>
+            {% endif %}
         </main>
 
         {% include 'includes/_footer.html' %}

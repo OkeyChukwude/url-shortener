@@ -17,6 +17,7 @@
 
         <main class="row">
             <div class="col mx-auto align-self-center">
+                <div id="login-feedback" class="mx-auto" style="max-width: 15rem;"></div>
                 <h3 class="mb-3">Login and start shortening and sharing</h3>
                 <form action="" class="row gx-5 mx-auto" style="max-width: 30rem;">
                     <div class="row mb-3">
@@ -51,6 +52,43 @@
     </script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script src="{{ url_for('static', filename='js/shorten.js') }}"></script>
+    <script>
+        const form = document.querySelector('form');
+        const submitButton = document.querySelector('#login')
+        const loginRequest = async function (email, password) {
+            response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email, password})
+            });
+
+            const data = response.json()
+            return data
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitButton.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+
+            const email = document.querySelector('#email').value;
+            const passowrd = document.querySelector('#password').value;
+
+            const loginResponse = await loginRequest(email, passowrd);
+
+            if (loginResponse.error) {
+                document.querySelector('#login-feedback').innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    ${loginResponse.error.message}
+                    <button type="button" class="ms-4 btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `;
+            }
+            document.querySelector('#password').value = '';
+            submitButton.innerHTML = 'Sign in';
+        })
+    </script>
 </body>
 </html>
 
