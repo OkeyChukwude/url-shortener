@@ -16,7 +16,11 @@
         {% include 'includes/_header.html' %}
 
         <main class="row">
-            <div class="col-sm-4">
+            {% if current_user.is_anonymous %}
+            <div class="col-sm-4 order-last order-md-first">
+            {% else %}
+            <div class="col-sm-4 mx-auto">
+            {% endif %}
                 <div class="card rounded-3">
                     <div class="card-body">
                         <form id="shorten-form" class="row g-3">
