@@ -17,38 +17,32 @@
 
         <main class="row">
             <div class="col mx-auto align-self-center">
-                <h3 class="mb-5">Login and start shortening and sharing</h3>
-                <!-- <form action="" class="row gx-5 mx-auto" style="max-width: 50rem;">
-                    <label for="name" class="form-label">Name</label>
-                    <div class="col-8 mx-auto">
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                    <div class="col-8 mx-auto">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email">
-                    </div>
-                    <div class="col-8 mx-auto">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" id="password">
-                    </div>
-                </form> -->
-                <form action="" class="row gx-5 mx-auto" style="max-width: 30rem;">
+                {% if error %}
+                <div id="login-feedback" class="mx-auto" style="max-width: 15rem;">
+                    <div class="alert alert-danger" role="alert">
+                         {{ error }}
+                         <button type="button" class="ms-4 btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                   </div>
+                </div>
+                {% endif %}
+                <h3 class="mb-5">Sign up and start shortening and sharing</h3>
+                <form action="/register" method="post" class="row gx-5 mx-auto" style="max-width: 30rem;">
                     <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label text-right">Name</label>
                         <div class="col-sm-10">
-                        <input type="text" class="form-control" id="name">
+                        <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label text-right">Email</label>
                         <div class="col-sm-10">
-                        <input type="email" class="form-control" id="email">
+                        <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputPassword3" class="col-sm-2 col-form-label text-right">Password</label>
                         <div class="col-sm-10">
-                        <input type="password" class="form-control" id="password">
+                        <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                     </div>
                     <button id="register" type="submit" class="btn btn-dark mx-auto" style="max-width: 15rem;">Sign Up</button>

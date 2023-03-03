@@ -17,19 +17,26 @@
 
         <main class="row">
             <div class="col mx-auto align-self-center">
-                <div id="login-feedback" class="mx-auto" style="max-width: 15rem;"></div>
+                {% if error %}
+                <div id="login-feedback" class="mx-auto" style="max-width: 15rem;">
+                    <div class="alert alert-danger" role="alert">
+                         {{ error }}
+                         <button type="button" class="ms-4 btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                   </div>
+                </div>
+                {% endif %}
                 <h3 class="mb-3">Login and start shortening and sharing</h3>
-                <form action="" class="row gx-5 mx-auto" style="max-width: 30rem;">
+                <form action="/login" method="post" class="row gx-5 mx-auto" style="max-width: 30rem;">
                     <div class="row mb-3">
                         <label for="email" class="col-sm-2 col-form-label text-right">Email</label>
                         <div class="col-sm-10">
-                        <input type="email" class="form-control" name="email" id="email">
+                        <input type="email" class="form-control" name="email" id="email" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="password" class="col-sm-2 col-form-label text-right">Password</label>
                         <div class="col-sm-10">
-                        <input type="password" class="form-control" name="password" id="password">
+                        <input type="password" class="form-control" name="password" id="password" required>
                         </div>
                     </div>
                     <button id="login" type="submit" class="btn btn-dark mx-auto" style="max-width: 15rem;">Sign in</button>
@@ -52,43 +59,6 @@
     </script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script src="{{ url_for('static', filename='js/shorten.js') }}"></script>
-    <script>
-        const form = document.querySelector('form');
-        const submitButton = document.querySelector('#login')
-        const loginRequest = async function (email, password) {
-            response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({email, password})
-            });
-
-            const data = response.json()
-            return data
-        }
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            submitButton.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-
-            const email = document.querySelector('#email').value;
-            const passowrd = document.querySelector('#password').value;
-
-            const loginResponse = await loginRequest(email, passowrd);
-
-            if (loginResponse.error) {
-                document.querySelector('#login-feedback').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    ${loginResponse.error.message}
-                    <button type="button" class="ms-4 btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                `;
-            }
-            document.querySelector('#password').value = '';
-            submitButton.innerHTML = 'Sign in';
-        })
-    </script>
 </body>
 </html>
 

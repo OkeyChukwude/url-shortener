@@ -61,26 +61,51 @@ def redirect_short(short):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for(index))
+        return redirect(url_for('index'))
     
     if request.method == 'POST':
-        email = request.json.get('email')
-        password = request.json.get('password')
+        email = request.form['email']
+        password = request.form['password']
+
+        if not email or not password:
+            return render_template('login.html', error='Please input all fields')
 
         user = User.query.filter_by(email=email).first()
-        if user is None or user.check_password(password):
-            return jsonify({'error': {'message': 'Inavlid email/password'}})
+        if user is None or not user.check_password(password):
+            return render_template('login.html', error='Invalid email/password')
         
         login_user(user)
         return redirect(url_for('index'))
 
     return render_template('login.html')
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+
+        if not email or not password or not name:
+            return render_template('register.html', error='Please input all fields')
+
+        if User.email_exist(email=email):
+            return render_template('register.html', error='A user with the specified email already exist')
+        
+        user = User(name=name, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+
+        login_user(user)
+        return render_template('index.html')
+
     return render_template('register.html')
 
 @app.route('/logout')
 def logout():
-    login_user()
+    logout_user()
     return redirect(url_for('index'))
