@@ -27,19 +27,19 @@
                             <div class="w-100">
                                 <label for="long-url" class="form-label text-dark h5">Enter a long URL</label>
                                 <input type="text" class="form-control" id="long-url" required>
-                                <div id="long-url-feedback"></div>
+                                <div id="long-url-feedback" class="text-danger"></div>
                             </div>
                             {% if current_user.is_anonymous %}
                             <div class="w-10">
                                 <label for="alias" class="form-label text-dark h5">Enter a custormised short</label>
                                 <input type="text" class="form-control" id="alias" disabled placeholder="Sign Up and customise shorts">
-                                <div id="alias-feedback"></div>
+                                <div id="alias-feedback" class="text-danger"></div>
                             </div>
                             {% else %}
                             <div class="w-10">
                                 <label for="alias" class="form-label text-dark h5">Enter a custormised short</label>
                                 <input type="text" class="form-control" id="alias">
-                                <div id="alias-feedback"></div>
+                                <div id="alias-feedback" class="text-danger"></div>
                             </div>
                             {% endif %}
                             <button id="submit" class="w-100 btn btn-dark fw-bold" type="submit">Shorten</button>

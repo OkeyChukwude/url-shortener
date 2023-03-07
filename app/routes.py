@@ -28,23 +28,33 @@ def create_short():
 
     is_valid_url = valid_url(long_url)
 
-    if is_valid_url is None:
+    if not is_valid_url:
         return jsonify({'error': {'message': 'Invalid URL'}})
+    
+    if current_user.is_authenticated and alias and Url.query.filter_by(short=alias).first():
+        return jsonify({'error': {'message': 'Alias is not available'}})
 
-    short = generate_short()
+    url = ''
+    if current_user.is_authenticated and alias:
+        url = Url(longurl=long_url, short=alias, userId=current_user.id)
+        
+    else:
+        short = ''
+        while True:
+            short = generate_short()
+            short_exist = Url.query.filter_by(short=short).first()
 
-    while True:
-        short = generate_short()
-        short_exist = Url.query.filter_by(short=short).first()
-
-        if short_exist is None:
-            break
-
-    url = Url(longurl=long_url, short=short, )
+            if short_exist is None:
+                break
+        if current_user.is_authenticated:
+            url = Url(longurl=long_url, short=short, userId=current_user.id)
+        else:
+            url = Url(longurl=long_url, short=short)
+    
     db.session.add(url)
     db.session.commit()
 
-    return jsonify({'longURL': long_url, 'shortURL': f'{request.host_url}{short}'})
+    return jsonify({'longURL': url.longurl, 'shortURL': f'{request.host_url}{url.short}'})
 
 @app.route('/<short>')
 def redirect_short(short):

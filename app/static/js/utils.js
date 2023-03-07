@@ -140,17 +140,24 @@ class UI {
         const button = document.querySelector('#submit');
         const longURL = document.querySelector('#long-url').value;
         const alias = document.querySelector('#alias').value;
+        const longUrlFeedback = document.querySelector('#long-url-feedback')
+        const aliasFeedback = document.querySelector('#alias-feedback')
 
+        aliasFeedback.textContent = ''
+        longUrlFeedback.textContent = ''
         button.innerHTML = `<div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div>`;
 
         const response = await shorten(longURL, alias);
-        console.log(response)
 
         if (response.error) {
             const message = response.error.message
             if (message === 'Invalid URL') {
                 document.querySelector('#long-url-feedback').textContent = message
             }
+            if (message === 'Alias is not available') {
+                document.querySelector('#alias-feedback').textContent = message
+            }
+            button.innerHTML = 'Shorten';
             return
         }
 
