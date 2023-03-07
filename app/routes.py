@@ -19,7 +19,8 @@ def not_found(error):
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Home|RollCall')
+    user_id = current_user.id if current_user.is_authenticated else None
+    return render_template('index.html', title='Home|RollCall', user=user_id)
 
 @app.route('/shorten', methods=['POST'])
 def create_short():
@@ -87,7 +88,7 @@ def login():
         login_user(user)
         return redirect(url_for('index'))
 
-    return render_template('login.html')
+    return render_template('login.html', user=None)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -113,7 +114,7 @@ def register():
         login_user(user)
         return render_template('index.html')
 
-    return render_template('register.html')
+    return render_template('register.html', user=None)
 
 @app.route('/logout')
 def logout():

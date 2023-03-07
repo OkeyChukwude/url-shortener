@@ -47,8 +47,23 @@ class UI {
             let longurlEle = document.createElement('h5');
             let shorturlEle = document.createElement('p');
             let buttonsContainer = document.createElement('div');
-            
-            buttonsContainer.innerHTML = `
+
+            console.log(user)
+            if (user === null) {
+                buttonsContainer.innerHTML = `
+                                <a href=${url.shortURL} target="_blank" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
+                                <a type="button" href="mailto:?subject=Share Shorts&amp;body=Share shorts${url.shortURL}" id="email-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></a>
+                                <a href="/login" type="button" id="qr-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Please Signup to get a qr code</span>"><i class="bi bi-qr-code"></i></a>
+                                <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Share on social media</span>">Share</button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <li><a href="https://www.facebook.com/sharer/sharer.php?u=${url.shortURL}" class="dropdown-item" id="facebook-share" target="_blank" rel="noopener noreferrer" type="button"><i class="bi bi-facebook"></i> Facebook</a></li>
+                                    <li><a href="https://twitter.com/intent/tweet?text=Share shorts on Twitter ${url.shortURL}" class="dropdown-item" id="twitter-share" target="_blank" rel="noopener noreferrer" data-size="large"  type="button"><i class="bi bi-twitter"></i> Twitter</a></li>
+                                    <li><a class="dropdown-item" id="whatsapp-share" data-action="share/whatsapp/share" rel="noopener noreferrer" target="_blank type="button"><i class="bi bi-whatsapp"></i> WhatsApp</a></li>
+                                    <li><a href="https://www.linkedin.com/sharing/share-offsite/?url=${url.shortURL}" class="dropdown-item" id="linkedIn-share" target="_blank" rel="noopener noreferrer" type="button"><i class="bi bi-linkedin"></i> LinkedIn</a></li>
+                                </ul>
+                                <button type="button" class="copy btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark' onclick='copyToClipboard()'>Copy to clipboard</span>" >Copy</button>`;
+            } else {
+                buttonsContainer.innerHTML = `
                                 <a href=${url.shortURL} target="_blank" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
                                 <a type="button" href="mailto:?subject=Share Shorts&amp;body=Share shorts${url.shortURL}" id="email-share" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Email</span>" ><i class="bi bi-envelope-fill"></i></a>
                                 <button type="button" class="qr-share-offcanvas btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>QR Code</span>" ><i class="bi bi-qr-code"></i></button>
@@ -60,6 +75,9 @@ class UI {
                                     <li><a href="https://www.linkedin.com/sharing/share-offsite/?url=${url.shortURL}" class="dropdown-item" id="linkedIn-share" target="_blank" rel="noopener noreferrer" type="button"><i class="bi bi-linkedin"></i> LinkedIn</a></li>
                                 </ul>
                                 <button type="button" class="copy btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark' onclick='copyToClipboard()'>Copy to clipboard</span>" >Copy</button>`;
+            }
+            
+            
 
             longurlEle.textContent = url.longURL;
             shorturlEle.textContent = url.shortURL;
