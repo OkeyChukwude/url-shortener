@@ -128,8 +128,8 @@ class UI {
 
     showInputForm(event) {
         event.preventDefault();
-        document.querySelector("#shorten-form").classList.remove('d-none');
-        document.querySelector("#result").classList.add('d-none');
+        document.querySelector("#input-form").classList.remove('d-none');
+        document.querySelector("#output-form").classList.add('d-none');
         document.querySelector('#long-url').value = '';
         document.querySelector('#alias').value = '';
         document.querySelector('#submit').textContent =  'Shorten';
