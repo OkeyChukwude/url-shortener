@@ -23,7 +23,7 @@ class LocalStore {
             urls = JSON.parse(localStorage.getItem('urls'));
         }
 
-        return urls;
+        return urls.reverse();
     }
 
     static addUrl(url) {
@@ -40,15 +40,21 @@ class UI {
     createSidebar() {
         const urls = LocalStore.getUrls();
 
-        document.querySelector('#urls').innerHTML = '';
+        document.querySelector('#urls').innerHTML = `<div class="spinner-border" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>`;
 
         for (let url of urls) {
             let container = document.createElement('div');
             let longurlEle = document.createElement('h5');
             let shorturlEle = document.createElement('p');
+            let con = document.createElement('div');
+            con.classList.add ='row'
+            let timeEle = document.createElement('p'); 
+            timeEle.classList.add = 'col';
             let buttonsContainer = document.createElement('div');
+            buttonsContainer.classList.add = 'col'
 
-            console.log(user)
             if (user === null) {
                 buttonsContainer.innerHTML = `
                                 <a href=${url.shortURL} target="_blank" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark'>Visit URL</span>" ><i class="bi bi-forward-fill"></i></a>
@@ -76,15 +82,18 @@ class UI {
                                 </ul>
                                 <button type="button" class="copy btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<span class='dark' onclick='copyToClipboard()'>Copy to clipboard</span>" >Copy</button>`;
             }
-            
-            
 
             longurlEle.textContent = url.longURL;
             shorturlEle.textContent = url.shortURL;
+            timeEle.textContent = moment(url?.timestamp).fromNow();
+
+            con.appendChild(timeEle);
+            con.appendChild(buttonsContainer);
+            
 
             container.appendChild(longurlEle);
             container.appendChild(shorturlEle);
-            container.appendChild(buttonsContainer);
+            container.appendChild(con);
             container.appendChild(document.createElement('hr'));
             document.querySelector('#urls').appendChild(container);
 
@@ -179,7 +188,9 @@ class UI {
             return
         }
 
-        LocalStore.addUrl(response)
+        if (!user) {
+            LocalStore.addUrl(response)
+        }
 
         document.querySelector('#long-url-output').value = response.longURL
         document.querySelector('#short-url').value = response.shortURL
