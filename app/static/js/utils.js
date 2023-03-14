@@ -7,8 +7,19 @@ async function shorten(longURL, alias) {
         body: JSON.stringify({longURL, alias})
     });
 
-    const data = response.json()
-    return data
+    const data = response.json();
+    return data;
+}
+
+async function getShorts() {
+    const response = await fetch('/shorts', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = response.json();
+    return data;
 }
 
 
@@ -100,20 +111,27 @@ class UI {
     }
 
     createSidebar() {
-        const fetchURLPromise = new Promise((resolve, reject) => {
-                const urls = LocalStore.getUrls()
-                if (Array.isArray(urls)) {
-                    resolve(urls)
-                } else {
-                    reject()
-                }
-            })
+        const fetchURLPromise = new Promise(async (resolve, reject) => {
+            let urls;
+            if (user) {
+                const response = await getShorts()
+                console.log(response)
+                urls = response.urls
+            } else {
+                urls = LocalStore.getUrls()
+            }
+
+            if (Array.isArray(urls)) {
+                resolve(urls)
+            } else {
+                reject()
+            }
+        })
 
         document.querySelector('#myUrls').addEventListener('shown.bs.offcanvas', () => {
             fetchURLPromise
             .then((urls) => {
-                document.querySelector('.spinner-border').classList.add('d-none')  
-                console.log(urls.length)                  
+                document.querySelector('.spinner-border').classList.add('d-none')                  
                 UI.#displayUrls(urls)
 
                 const qrshareButtons = document.querySelectorAll('.qr-share-offcanvas')

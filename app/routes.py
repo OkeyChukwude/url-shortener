@@ -2,7 +2,10 @@ from app import app, db
 from flask import render_template, request, jsonify, redirect, url_for
 from .utils import valid_url, generate_short
 from .models import Url, User
-from flask_login import current_user, login_user, logout_user
+from .schemas import URLSchema
+from flask_login import current_user, login_user, logout_user, login_required
+
+url_schema = URLSchema()
 
 @app.errorhandler(404)
 def not_found(error):
@@ -56,6 +59,13 @@ def create_short():
     db.session.commit()
 
     return jsonify({'longURL': url.longurl, 'shortURL': f'{request.host_url}{url.short}', 'timestamp': url.timestamp})
+
+@app.route('/shorts', methods=['GET'])
+@login_required
+def get_shorts():
+    user_id = current_user.id
+    urls = map(lambda url: {'longURL': url_schema.dump(url)['longurl'], 'shortURL': f'{request.host_url}{url_schema.dump(url)["short"]}', 'timestamp': url_schema.dump(url)['timestamp'], 'clicks': url_schema.dump(url)['clicks']}, Url.query.filter_by(userId=user_id).all())
+    return jsonify({'urls': list(urls)})
 
 @app.route('/<short>')
 def redirect_short(short):
@@ -120,3 +130,4 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
