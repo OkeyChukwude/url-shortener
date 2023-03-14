@@ -89,11 +89,11 @@ def login():
         password = request.form['password']
 
         if not email or not password:
-            return render_template('login.html', error='Please input all fields')
+            return render_template('login.html', error='Please input all fields', user=None)
 
         user = User.query.filter_by(email=email).first()
         if user is None or not user.check_password(password):
-            return render_template('login.html', error='Invalid email/password')
+            return render_template('login.html', error='Invalid email/password', user=None)
         
         login_user(user)
         return redirect(url_for('index'))
@@ -111,10 +111,10 @@ def register():
         password = request.form['password']
 
         if not email or not password or not name:
-            return render_template('register.html', error='Please input all fields')
+            return render_template('register.html', error='Please input all fields', user=None)
 
         if User.email_exist(email=email):
-            return render_template('register.html', error='A user with the specified email already exist')
+            return render_template('register.html', error='A user with the specified email already exist', user=None)
         
         user = User(name=name, email=email)
         user.set_password(password)
