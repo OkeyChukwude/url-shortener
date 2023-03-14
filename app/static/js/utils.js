@@ -37,15 +37,10 @@ class LocalStore {
 
 // UI class
 class UI {
-    createSidebar() {
-        const urls = LocalStore.getUrls();
-
-        document.querySelector('#urls').innerHTML = `<div class="spinner-border" role="status">
-  <span class="visually-hidden">Loading...</span>
-</div>`;
-
+    static #displayUrls(urls) {
         for (let url of urls) {
             let container = document.createElement('div');
+            container.classList.add('url-list-item')
             let longurlEle = document.createElement('h5');
             let shorturlEle = document.createElement('p');
             let con = document.createElement('div');
@@ -102,15 +97,43 @@ class UI {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
         }
-        const qrshareButtons = document.querySelectorAll('.qr-share-offcanvas')
-        qrshareButtons.forEach(button => {
-            button.addEventListener('click', UI.getQRCode)
-        })
+    }
 
-        const copyButtons = document.querySelectorAll('.copy')
-        copyButtons.forEach(button => {
-            button.addEventListener('click', UI.copyToClipboard)
+    createSidebar() {
+        const fetchURLPromise = new Promise((resolve, reject) => {
+                const urls = LocalStore.getUrls()
+                if (Array.isArray(urls)) {
+                    resolve(urls)
+                } else {
+                    reject()
+                }
+            })
+
+        document.querySelector('#myUrls').addEventListener('shown.bs.offcanvas', () => {
+            fetchURLPromise
+            .then((urls) => {
+                document.querySelector('.spinner-border').classList.add('d-none')  
+                console.log(urls.length)                  
+                UI.#displayUrls(urls)
+
+                const qrshareButtons = document.querySelectorAll('.qr-share-offcanvas')
+                qrshareButtons.forEach(button => {
+                    button.addEventListener('click', UI.getQRCode)
+                })
+
+                const copyButtons = document.querySelectorAll('.copy')
+                copyButtons.forEach(button => {
+                    button.addEventListener('click', UI.copyToClipboard)
+                })
+            })
         })
+        
+        document.querySelector('#myUrls').addEventListener('hidden.bs.offcanvas', () => {
+            console.log('canvas don comot')
+            document.querySelector('#urls').innerHTML = ''
+            document.querySelector('.spinner-border').classList.remove('d-none')
+        })
+        
     }
 
     static async copyToClipboard(event) {
