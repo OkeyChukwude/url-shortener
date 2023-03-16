@@ -1,9 +1,41 @@
 from app import app, db
-from flask import render_template, request, jsonify, redirect, url_for
+from flask import render_template, request, jsonify, redirect, url_for, session, abort
 from .utils import valid_url, generate_short
 from .models import Url, User
 from .schemas import URLSchema
 from flask_login import current_user, login_user, logout_user, login_required
+import os
+from dotenv import load_dotenv
+import requests
+
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from pip._vendor import cachecontrol
+import google.auth.transport.requests
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
+GOOGLE_PROJECT_ID = os.environ.get("GOOGLE_PROJECT_ID", None)
+GOOGLE_REDIRECT_URLS = os.environ.get("GOOGLE_REDIRECT_URLS", None)
+
+CLIENT_CONFIG = {"web": {
+    "client_id": GOOGLE_CLIENT_ID,
+    "project_id": GOOGLE_PROJECT_ID,
+    "auth_uri":"https://accounts.google.com/o/oauth2/auth",
+    "token_uri":"https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": GOOGLE_CLIENT_SECRET,
+    "redirect_uris": GOOGLE_REDIRECT_URLS
+    }
+}
+# os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+flow = Flow.from_client_config(client_config=CLIENT_CONFIG, scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"], redirect_uri=GOOGLE_REDIRECT_URLS)
 
 url_schema = URLSchema()
 
@@ -131,3 +163,35 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/login/google')
+def google_login():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect(authorization_url)
+
+@app.route("/login/callback")
+def callback():
+    flow.fetch_token(authorization_response=request.url)
+
+    if not session["state"] == request.args["state"]:
+        abort(500)  # State does not match!
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=GOOGLE_CLIENT_ID
+    )
+
+    user = User.query.filter_by(email=id_info.get('email')).first()
+    if user is None:
+        user = User(name=id_info.get('name'), email=id_info.get('email'), google_id=id_info.get("sub"))
+        db.session.add(user)
+        db.session.commit()
+
+    login_user(user)
+    return redirect(url_for('index'))
