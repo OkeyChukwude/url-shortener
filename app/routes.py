@@ -34,7 +34,7 @@ CLIENT_CONFIG = {"web": {
     "redirect_uris": GOOGLE_REDIRECT_URLS
     }
 }
-# os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 flow = Flow.from_client_config(client_config=CLIENT_CONFIG, scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"], redirect_uri=GOOGLE_REDIRECT_URLS)
 
 url_schema = URLSchema()
