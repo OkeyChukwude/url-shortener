@@ -178,7 +178,7 @@ class UI {
             });
         } else {
             qr = new QRious({
-                value: event.target.parentElement.parentElement.parentElement.querySelector('p').textContent
+                value: event.target.parentElement.parentElement.parentElement.parentElement.querySelector('p').textContent
             });
         }
 
