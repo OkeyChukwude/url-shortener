@@ -155,12 +155,11 @@ class UI {
     }
 
     static async copyToClipboard(event) {
-        console.log(event.target)
         try {
             if (event.target.parentElement.parentElement === document.querySelector('#output-form')) {
                 await navigator.clipboard.writeText(document.querySelector('#short-url').value)
             } else {
-                await navigator.clipboard.writeText(event.target.parentElement.parentElement.querySelector('p').textContent)
+                await navigator.clipboard.writeText(event.target.parentElement.parentElement.parentElement.querySelector('p').textContent)
             }
             event.target.innerHTML = '<i class="bi bi-check2"></i>'
             setTimeout(() => {
