@@ -115,7 +115,6 @@ class UI {
             let urls;
             if (user) {
                 const response = await getShorts()
-                console.log(response)
                 urls = response.urls
             } else {
                 urls = LocalStore.getUrls()
