@@ -49,6 +49,9 @@ class LocalStore {
 // UI class
 class UI {
     static #displayUrls(urls) {
+        if (urls.length === 0) {
+            document.querySelector('#urls').textContent = "You don't have any urls";
+        } else {
         for (let url of urls) {
             let container = document.createElement('div');
             container.classList.add('url-list-item')
@@ -91,7 +94,8 @@ class UI {
 
             longurlEle.textContent = url.longURL;
             shorturlEle.textContent = url.shortURL;
-            timeEle.textContent = moment(url?.timestamp).fromNow();
+            timeEle.textContent = moment(moment.utc(url?.timestamp).local()).fromNow();
+            console.log(url.timestamp) 
 
             con.appendChild(timeEle);
             con.appendChild(buttonsContainer);
@@ -107,50 +111,38 @@ class UI {
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
-        }
+        }}
     }
 
-    createSidebar() {
-        const fetchURLPromise = new Promise(async (resolve, reject) => {
-            let urls;
-            if (user) {
-                const response = await getShorts()
-                urls = response.urls
-            } else {
-                urls = LocalStore.getUrls()
-            }
+    async createSidebar() {
+        let urls;
+        if (user) {
+            const response = await getShorts()
+            urls = response.urls
+        } else {
+            urls = LocalStore.getUrls()
+        }
 
-            if (Array.isArray(urls)) {
-                resolve(urls)
-            } else {
-                reject()
-            }
+        urls.reverse()
+
+        document.querySelector('.spinner-border').classList.add('d-none')                  
+        UI.#displayUrls(urls)
+
+        const qrshareButtons = document.querySelectorAll('.qr-share-offcanvas')
+        qrshareButtons.forEach(button => {
+            button.addEventListener('click', UI.getQRCode)
         })
 
-        document.querySelector('#myUrls').addEventListener('shown.bs.offcanvas', () => {
-            fetchURLPromise
-            .then((urls) => {
-                document.querySelector('.spinner-border').classList.add('d-none')                  
-                UI.#displayUrls(urls)
-
-                const qrshareButtons = document.querySelectorAll('.qr-share-offcanvas')
-                qrshareButtons.forEach(button => {
-                    button.addEventListener('click', UI.getQRCode)
-                })
-
-                const copyButtons = document.querySelectorAll('.copy')
-                copyButtons.forEach(button => {
-                    button.addEventListener('click', UI.copyToClipboard)
-                })
-            })
+        const copyButtons = document.querySelectorAll('.copy')
+        copyButtons.forEach(button => {
+            button.addEventListener('click', UI.copyToClipboard)
         })
         
-        document.querySelector('#myUrls').addEventListener('hidden.bs.offcanvas', () => {
-            console.log('canvas don comot')
-            document.querySelector('#urls').innerHTML = ''
-            document.querySelector('.spinner-border').classList.remove('d-none')
-        })
-        
+    }
+
+    removeSidebar() {
+        document.querySelector('#urls').innerHTML = ''
+        document.querySelector('.spinner-border').classList.remove('d-none')
     }
 
     static async copyToClipboard(event) {

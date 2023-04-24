@@ -14,7 +14,9 @@ shortenAgain.addEventListener('click', ui.showInputForm);
 
 qrbutton.addEventListener('click', UI.getQRCode); 
 
-myurls.addEventListener('click', ui.createSidebar)
+myurls.addEventListener('click', ui.createSidebar);
+
+document.querySelector('#myUrls').addEventListener('hidden.bs.offcanvas', ui.removeSidebar);
 
 myUrlsButton.addEventListener('click', ui.createSidebar)
 
