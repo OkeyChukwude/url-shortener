@@ -154,7 +154,7 @@ def register():
         db.session.commit()
 
         login_user(user)
-        return render_template('index.html')
+        return render_template('index.html', user=user_id)
 
     return render_template('register.html', user=None)
 
